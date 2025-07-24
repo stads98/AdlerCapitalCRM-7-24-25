@@ -1,0 +1,450 @@
+import type { Deal, DealStage } from "@/lib/types"
+
+// Helper function to create a date in the past
+const daysAgo = (days: number): string => {
+  const date = new Date()
+  date.setDate(date.getDate() - days)
+  return date.toISOString()
+}
+
+// Helper function to create a date in the future
+const daysFromNow = (days: number): string => {
+  const date = new Date()
+  date.setDate(date.getDate() + days)
+  return date.toISOString()
+}
+
+export const dealStages: Record<DealStage, { name: string; description: string; color: string; order: number }> = {
+  lead: {
+    name: "Lead",
+    description: "Initial contact and qualification",
+    color: "gray",
+    order: 1,
+  },
+  credit_run: {
+    name: "Credit Run",
+    description: "Credit check in progress",
+    color: "blue",
+    order: 2,
+  },
+  appraisal_fee: {
+    name: "Appraisal Fee",
+    description: "Collecting appraisal fee",
+    color: "indigo",
+    order: 3,
+  },
+  document_collection: {
+    name: "Document Collection",
+    description: "Gathering required documents",
+    color: "purple",
+    order: 4,
+  },
+  processing: {
+    name: "Processing",
+    description: "Loan is being processed",
+    color: "amber",
+    order: 5,
+  },
+  underwriting: {
+    name: "Underwriting",
+    description: "Loan is being underwritten",
+    color: "orange",
+    order: 6,
+  },
+  closing: {
+    name: "Closing",
+    description: "Preparing for closing",
+    color: "green",
+    order: 7,
+  },
+  funded: {
+    name: "Funded",
+    description: "Loan has been funded",
+    color: "emerald",
+    order: 8,
+  },
+  lost: {
+    name: "Lost",
+    description: "Deal was lost or canceled",
+    color: "red",
+    order: 9,
+  },
+}
+
+export const mockDeals: Deal[] = [
+  {
+    id: "deal-1",
+    title: "Refinance - 123 Main St",
+    contactId: "contact-1",
+    value: 450000,
+    stage: "credit_run",
+    createdAt: daysAgo(15),
+    updatedAt: daysAgo(10),
+    expectedCloseDate: daysFromNow(45),
+    stageHistory: [
+      {
+        stageId: "lead",
+        enteredAt: daysAgo(15),
+        exitedAt: daysAgo(12),
+        durationInDays: 3,
+      },
+      {
+        stageId: "credit_run",
+        enteredAt: daysAgo(12),
+      },
+    ],
+    notes: "Client is looking to refinance their primary residence.",
+    tags: [
+      { id: "tag-1", name: "Refinance", color: "blue" },
+      { id: "tag-2", name: "Priority", color: "red" },
+    ],
+    loanType: "Non-QM",
+    interestRate: 6.25,
+    loanTerm: 30,
+    propertyAddress: "123 Main St, Miami, FL 33101",
+    propertyType: "single-family",
+    appraisalValue: 600000,
+    ltv: 75,
+    creditScore: 720,
+    documents: [
+      {
+        id: "doc-1",
+        name: "Bank Statements",
+        type: "financial",
+        uploadedAt: daysAgo(11),
+        status: "approved",
+      },
+      {
+        id: "doc-2",
+        name: "Tax Returns",
+        type: "financial",
+        uploadedAt: daysAgo(10),
+        status: "pending",
+      },
+    ],
+  },
+  {
+    id: "deal-2",
+    title: "Purchase - 456 Oak Ave",
+    contactId: "contact-2",
+    value: 325000,
+    stage: "document_collection",
+    createdAt: daysAgo(20),
+    updatedAt: daysAgo(5),
+    expectedCloseDate: daysFromNow(30),
+    stageHistory: [
+      {
+        stageId: "lead",
+        enteredAt: daysAgo(20),
+        exitedAt: daysAgo(18),
+        durationInDays: 2,
+      },
+      {
+        stageId: "credit_run",
+        enteredAt: daysAgo(18),
+        exitedAt: daysAgo(15),
+        durationInDays: 3,
+      },
+      {
+        stageId: "appraisal_fee",
+        enteredAt: daysAgo(15),
+        exitedAt: daysAgo(10),
+        durationInDays: 5,
+      },
+      {
+        stageId: "document_collection",
+        enteredAt: daysAgo(10),
+      },
+    ],
+    notes: "First-time homebuyer looking for a 30-year fixed mortgage.",
+    tags: [
+      { id: "tag-3", name: "Purchase", color: "green" },
+      { id: "tag-4", name: "First-Time Buyer", color: "purple" },
+    ],
+    loanType: "Non-QM",
+    interestRate: 5.875,
+    loanTerm: 30,
+    propertyAddress: "456 Oak Ave, Orlando, FL 32801",
+    propertyType: "single-family",
+    appraisalValue: 330000,
+    ltv: 98.5,
+    creditScore: 680,
+    documents: [
+      {
+        id: "doc-3",
+        name: "Pay Stubs",
+        type: "financial",
+        uploadedAt: daysAgo(8),
+        status: "approved",
+      },
+      {
+        id: "doc-4",
+        name: "Bank Statements",
+        type: "financial",
+        uploadedAt: daysAgo(7),
+        status: "approved",
+      },
+      {
+        id: "doc-5",
+        name: "Purchase Agreement",
+        type: "legal",
+        uploadedAt: daysAgo(6),
+        status: "pending",
+      },
+    ],
+  },
+  {
+    id: "deal-3",
+    title: "Investment Property - 789 Pine Ln",
+    contactId: "contact-3",
+    value: 750000,
+    stage: "underwriting",
+    createdAt: daysAgo(30),
+    updatedAt: daysAgo(2),
+    expectedCloseDate: daysFromNow(15),
+    stageHistory: [
+      {
+        stageId: "lead",
+        enteredAt: daysAgo(30),
+        exitedAt: daysAgo(28),
+        durationInDays: 2,
+      },
+      {
+        stageId: "credit_run",
+        enteredAt: daysAgo(28),
+        exitedAt: daysAgo(25),
+        durationInDays: 3,
+      },
+      {
+        stageId: "appraisal_fee",
+        enteredAt: daysAgo(25),
+        exitedAt: daysAgo(20),
+        durationInDays: 5,
+      },
+      {
+        stageId: "document_collection",
+        enteredAt: daysAgo(20),
+        exitedAt: daysAgo(12),
+        durationInDays: 8,
+      },
+      {
+        stageId: "processing",
+        enteredAt: daysAgo(12),
+        exitedAt: daysAgo(5),
+        durationInDays: 7,
+      },
+      {
+        stageId: "underwriting",
+        enteredAt: daysAgo(5),
+      },
+    ],
+    notes: "Experienced investor looking to finance a multi-family property.",
+    tags: [
+      { id: "tag-5", name: "Investment", color: "amber" },
+      { id: "tag-6", name: "Multi-Family", color: "indigo" },
+    ],
+    loanType: "Non-QM",
+    interestRate: 7.125,
+    loanTerm: 30,
+    propertyAddress: "789 Pine Ln, Tampa, FL 33602",
+    propertyType: "multi-family",
+    appraisalValue: 800000,
+    ltv: 93.75,
+    creditScore: 760,
+    documents: [
+      {
+        id: "doc-6",
+        name: "Entity Documents",
+        type: "legal",
+        uploadedAt: daysAgo(18),
+        status: "approved",
+      },
+      {
+        id: "doc-7",
+        name: "Property Financials",
+        type: "financial",
+        uploadedAt: daysAgo(17),
+        status: "approved",
+      },
+      {
+        id: "doc-8",
+        name: "Insurance Proof",
+        type: "insurance",
+        uploadedAt: daysAgo(15),
+        status: "approved",
+      },
+    ],
+  },
+  {
+    id: "deal-4",
+    title: "Cash-Out Refi - 101 Beach Blvd",
+    contactId: "contact-4",
+    value: 525000,
+    stage: "processing",
+    createdAt: daysAgo(25),
+    updatedAt: daysAgo(3),
+    expectedCloseDate: daysFromNow(20),
+    stageHistory: [
+      {
+        stageId: "lead",
+        enteredAt: daysAgo(25),
+        exitedAt: daysAgo(23),
+        durationInDays: 2,
+      },
+      {
+        stageId: "credit_run",
+        enteredAt: daysAgo(23),
+        exitedAt: daysAgo(20),
+        durationInDays: 3,
+      },
+      {
+        stageId: "appraisal_fee",
+        enteredAt: daysAgo(20),
+        exitedAt: daysAgo(15),
+        durationInDays: 5,
+      },
+      {
+        stageId: "document_collection",
+        enteredAt: daysAgo(15),
+        exitedAt: daysAgo(8),
+        durationInDays: 7,
+      },
+      {
+        stageId: "processing",
+        enteredAt: daysAgo(8),
+      },
+    ],
+    notes: "Client wants to pull equity out for home improvements.",
+    tags: [
+      { id: "tag-7", name: "Cash-Out", color: "emerald" },
+      { id: "tag-8", name: "Refinance", color: "blue" },
+    ],
+    loanType: "Non-QM",
+    interestRate: 6.5,
+    loanTerm: 30,
+    propertyAddress: "101 Beach Blvd, Fort Lauderdale, FL 33301",
+    propertyType: "single-family",
+    appraisalValue: 700000,
+    ltv: 75,
+    creditScore: 740,
+    documents: [
+      {
+        id: "doc-9",
+        name: "Bank Statements",
+        type: "financial",
+        uploadedAt: daysAgo(14),
+        status: "approved",
+      },
+      {
+        id: "doc-10",
+        name: "Tax Returns",
+        type: "financial",
+        uploadedAt: daysAgo(13),
+        status: "approved",
+      },
+      {
+        id: "doc-11",
+        name: "Current Mortgage Statement",
+        type: "financial",
+        uploadedAt: daysAgo(12),
+        status: "approved",
+      },
+    ],
+  },
+  {
+    id: "deal-5",
+    title: "Duplex Purchase - 202 Maple Dr",
+    contactId: "contact-5",
+    value: 400000,
+    stage: "closing",
+    createdAt: daysAgo(45),
+    updatedAt: daysAgo(1),
+    expectedCloseDate: daysFromNow(5),
+    stageHistory: [
+      {
+        stageId: "lead",
+        enteredAt: daysAgo(45),
+        exitedAt: daysAgo(43),
+        durationInDays: 2,
+      },
+      {
+        stageId: "credit_run",
+        enteredAt: daysAgo(43),
+        exitedAt: daysAgo(40),
+        durationInDays: 3,
+      },
+      {
+        stageId: "appraisal_fee",
+        enteredAt: daysAgo(40),
+        exitedAt: daysAgo(35),
+        durationInDays: 5,
+      },
+      {
+        stageId: "document_collection",
+        enteredAt: daysAgo(35),
+        exitedAt: daysAgo(28),
+        durationInDays: 7,
+      },
+      {
+        stageId: "processing",
+        enteredAt: daysAgo(28),
+        exitedAt: daysAgo(20),
+        durationInDays: 8,
+      },
+      {
+        stageId: "underwriting",
+        enteredAt: daysAgo(20),
+        exitedAt: daysAgo(7),
+        durationInDays: 13,
+      },
+      {
+        stageId: "closing",
+        enteredAt: daysAgo(7),
+      },
+    ],
+    notes: "Investor purchasing a duplex as a rental property.",
+    tags: [
+      { id: "tag-9", name: "Purchase", color: "green" },
+      { id: "tag-10", name: "Investment", color: "amber" },
+      { id: "tag-11", name: "Duplex", color: "violet" },
+    ],
+    loanType: "Non-QM",
+    interestRate: 6.75,
+    loanTerm: 30,
+    propertyAddress: "202 Maple Dr, Jacksonville, FL 32202",
+    propertyType: "duplex",
+    appraisalValue: 410000,
+    ltv: 97.5,
+    creditScore: 710,
+    documents: [
+      {
+        id: "doc-12",
+        name: "Purchase Agreement",
+        type: "legal",
+        uploadedAt: daysAgo(34),
+        status: "approved",
+      },
+      {
+        id: "doc-13",
+        name: "Bank Statements",
+        type: "financial",
+        uploadedAt: daysAgo(33),
+        status: "approved",
+      },
+      {
+        id: "doc-14",
+        name: "Property Inspection",
+        type: "inspection",
+        uploadedAt: daysAgo(30),
+        status: "approved",
+      },
+      {
+        id: "doc-15",
+        name: "Insurance Quote",
+        type: "insurance",
+        uploadedAt: daysAgo(25),
+        status: "approved",
+      },
+    ],
+  },
+]
